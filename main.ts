@@ -71,8 +71,9 @@ const dossierCaps = {
 };
 const dossier = buildDossier(outputDir, dossierCaps);
 // The gate rebuilds this dossier from the same files and compares bytes, so
-// prove here that the build is deterministic: a second pass must agree.
-if (buildDossier(outputDir, dossierCaps) !== dossier) {
+// prove here that the build is deterministic: a second pass must agree, byte
+// for byte (buildDossier returns bytes, so compare them as buffers).
+if (!Buffer.from(buildDossier(outputDir, dossierCaps)).equals(Buffer.from(dossier))) {
   throw new Error('dossier build is not deterministic; refusing to hand in');
 }
 writeFileSync(join(outputDir, 'dossier.json'), dossier);
